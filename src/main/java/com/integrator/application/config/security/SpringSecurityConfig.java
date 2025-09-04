@@ -3,6 +3,7 @@ package com.integrator.application.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,11 +21,10 @@ public class SpringSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/public/**").permitAll() // Allow public access
-                        .requestMatchers("/dbconsole/**").permitAll() // Allow public access
-                        .requestMatchers("/api/auth/**").permitAll() // Allow auth
-//                        .requestMatchers("/api/testdata/**").permitAll() // test
-                        .anyRequest().authenticated() // Require authentication for all other requests
+                                .requestMatchers("/public/**").permitAll() // Allow public access
+                                .requestMatchers("/dbconsole/**").permitAll() // Allow public access
+                                .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // Allow auth
+                                .anyRequest().authenticated() // Require authentication for all other requests
                 )
                 .csrf(AbstractHttpConfigurer::disable)
 //                .headers(AbstractHttpConfigurer::disable)

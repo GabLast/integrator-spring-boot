@@ -20,7 +20,8 @@ import org.springframework.util.AntPathMatcher;
 
 @Slf4j
 public class CustomAuthenticationFilter extends FilterErrorHandler {
-
+//    filters for fully webflux: https://www.baeldung.com/spring-webflux-filters
+    // tldr: class ExampleWebFilter implements WebFilter
     private final AuthenticationService authenticationService;
     private final CustomUserDetailsService customUserDetailsService;
     private final UserSettingService userSettingService;
@@ -40,6 +41,10 @@ public class CustomAuthenticationFilter extends FilterErrorHandler {
 //            System.out.println("For Request: " + request.getServletPath() + "\n\n");
 //            System.out.println("Token: " + authToken + "\n\n");
         try {
+            if(StringUtils.isBlank(authToken)) {
+                throw new ResourceNotFoundException("The request did not send its Authorization token");
+            }
+
             if (authenticationService.isJWTValid(authToken) == null) {
                 throw new NoAccessException("Invalid token");
             }
@@ -80,7 +85,8 @@ public class CustomAuthenticationFilter extends FilterErrorHandler {
 //        https://stackoverflow.com/questions/52370411/springboot-bypass-onceperrequestfilter-filters
         boolean filter;
 
-        filter = new AntPathMatcher().match("/api/auth/login", request.getServletPath()) ||
+        filter =
+                new AntPathMatcher().match("/api/auth/**", request.getServletPath()) ||
                 new AntPathMatcher().match("/sw.js", request.getServletPath()) ||
                 new AntPathMatcher().match("/*.ico", request.getServletPath()) ||
                 new AntPathMatcher().match("/dbconsole", request.getServletPath()) ||

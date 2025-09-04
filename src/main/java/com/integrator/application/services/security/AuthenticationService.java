@@ -185,7 +185,6 @@ public class AuthenticationService {
 
     }
 
-    @Transactional(readOnly = true)
     public LoginResponse login(UserDto userDto) throws NoSuchAlgorithmException {
         User user = userService.findByUsernameOrMail(userDto.usernameMail());
 
@@ -194,7 +193,7 @@ public class AuthenticationService {
         }
 
         if (!passwordEncoder.matches(userDto.password(), user.getPassword())) {
-            throw new ResourceNotFoundException("Invalid Credentials");
+            throw new ResourceNotFoundException("Password does not match");
         }
 
         Token token = generateToken(user);
