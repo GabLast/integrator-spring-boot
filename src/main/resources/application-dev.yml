@@ -1,0 +1,27 @@
+spring:
+  #h2 datasource for dev enviroment:
+  datasource:
+    url: jdbc:h2:file:./data/integrator
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  #JPA
+  jpa:
+    show-sql: false
+    hibernate:
+#      ddl-auto: create-drop
+      ddl-auto: update
+  #h2 console for minor testing
+  h2:
+    console:
+      path: '/dbconsole'
+      enabled: true
+  flyway:
+    enabled: true
+    user: sa
+    password:
+    locations:
+      - classpath:db/dev/migration
+    execute-in-transaction: true
+    baseline-on-migrate: true
+    baseline-version: 0

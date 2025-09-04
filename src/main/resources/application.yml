@@ -1,0 +1,16 @@
+spring:
+  application:
+    name:
+      integrator-spring-boot
+  profiles:
+    active: dev
+
+server:
+  port: ${PORT:8080}
+
+#App info
+app:
+  name: @project.name@
+  version: @project.version@
+  secrets:
+    key: ${JWT:JNN324KUJN23UN4UI231H798N798CN987N198N908N8DN8}
