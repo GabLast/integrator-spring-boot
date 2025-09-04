@@ -2,6 +2,8 @@ package com.integrator.application.services.security;
 
 import com.integrator.application.config.AppInfo;
 import com.integrator.application.dto.request.security.UserDto;
+import com.integrator.application.dto.response.security.LoginResponse;
+import com.integrator.application.dto.response.security.PermitDto;
 import com.integrator.application.exceptions.NoAccessException;
 import com.integrator.application.exceptions.ResourceNotFoundException;
 import com.integrator.application.models.configuration.UserSetting;
@@ -16,6 +18,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,13 +41,15 @@ public class AuthenticationService {
     private final TokenRepository tokenRepository;
     private final UserSettingService userSettingService;
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Transactional(readOnly = true)
     public Token findByTokenAndEnabled(String tokenHash, boolean enabled) {
         Token token = tokenRepository.findByTokenAndEnabledAndUser_EnabledIsTrue(tokenHash, enabled);
 
         if (token == null) {
-            throw new ResourceNotFoundException("The token doesnt exist");
+            throw new ResourceNotFoundException("The token does not exist");
         }
 
         UserSetting userSetting = userSettingService.findByEnabledAndUser(true, token.getUser());
@@ -116,38 +121,28 @@ public class AuthenticationService {
     }
 
     public Claims isJWTValid(String token) {
-        try {
-            token = token.replace("Bearer", "").trim();
+        token = token.replace("Bearer", "").trim();
 
-            Claims claims = Jwts.parser()
-                    .verifyWith(Utilities.generateJWTKey(appInfo.getJwtSecretKey()))
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
+        Claims claims = Jwts.parser()
+                .verifyWith(Utilities.generateJWTKey(appInfo.getJwtSecretKey()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
 //            System.out.println("Expires in:" + Utilities.formatDate(claims.getExpiration(),"", ""));
-
-            return claims;
-        } catch (Exception ignored) {
-            return null;
-        }
+        return claims;
     }
 
     public String getJWTPayload(String token) {
-        try {
-            token = token.replace("Bearer", "").trim();
+        token = token.replace("Bearer", "").trim();
 
-            Claims claims = Jwts.parser()
-                    .verifyWith(Utilities.generateJWTKey(appInfo.getJwtSecretKey()))
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+        Claims claims = Jwts.parser()
+                .verifyWith(Utilities.generateJWTKey(appInfo.getJwtSecretKey()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
 
 //            return Utilities.decrypt(claims.get("token").toString(), Utilities.generateSecretKey());
-            return claims.get("token").toString();
-        } catch (Exception ignored) {
-            return "";
-        }
+        return claims.get("token").toString();
     }
 
     public String generateJWT(Token token) throws NoSuchAlgorithmException {
@@ -191,17 +186,28 @@ public class AuthenticationService {
     }
 
     @Transactional(readOnly = true)
-    public User login(UserDto userDto) {
-        User user = userService.findByUsernameOrMail(userDto.username());
+    public LoginResponse login(UserDto userDto) throws NoSuchAlgorithmException {
+        User user = userService.findByUsernameOrMail(userDto.usernameMail());
 
         if (Objects.isNull(user)) {
             throw new ResourceNotFoundException("The user doesn't exist");
         }
 
-        if (!userService.getPasswordEncoder().matches(userDto.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(userDto.password(), user.getPassword())) {
             throw new ResourceNotFoundException("Invalid Credentials");
         }
 
-        return user;
+        Token token = generateToken(user);
+
+        return LoginResponse.builder()
+                .token(token.getToken())
+                .grantedAuthorities(customUserDetailsService
+                        .getGrantedAuthorities(user).stream()
+                        .map(it -> PermitDto.builder()
+                                .permit(it.getAuthority())
+                                .build()).toList())
+                .build();
     }
+
+
 }

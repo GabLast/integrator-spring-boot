@@ -90,7 +90,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         for (Permit it : findUserPermits(user)) {
             updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + it.getCode()));
         }
-
         return updatedAuthorities;
     }
 }

@@ -5,5 +5,5 @@ import com.integrator.application.dto.BaseJson;
 import lombok.Builder;
 
 @Builder
-public record UserDto(Long id, String username, String email, String password) implements BaseJson {
+public record UserDto(Long id, String usernameMail, String password) implements BaseJson {
 }

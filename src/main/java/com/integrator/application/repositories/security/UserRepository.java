@@ -32,7 +32,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "and (:mail is null or u.mail like '' or u.mail is null or u.mail like lower(trim(concat('%', :mail,'%')))) "
     )
     List<User> findAllFilter(@Param("enabled") Boolean enabled,
-                             @Param("username") String username,
+                             @Param("usernameMail") String username,
                              @Param("mail") String mail,
                              @Param("admin") Boolean admin,
                              Pageable pageable
@@ -47,7 +47,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "and (:mail is null or u.mail like '' or u.mail is null or u.mail like lower(trim(concat('%', :mail,'%')))) "
     )
     Integer countAllFilter(@Param("enabled") Boolean enabled,
-                           @Param("username") String username,
+                           @Param("usernameMail") String username,
                            @Param("mail") String mail,
                            @Param("admin") Boolean admin
     );

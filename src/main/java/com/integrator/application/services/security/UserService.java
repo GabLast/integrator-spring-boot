@@ -8,13 +8,11 @@ import com.integrator.application.models.security.User;
 import com.integrator.application.repositories.security.UserRepository;
 import com.integrator.application.services.BaseService;
 import com.integrator.application.utils.OffsetBasedPageRequest;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +27,7 @@ public class UserService extends BaseService<User, Long> {
 
     private final UserRepository userRepository;
     private final ProfileUserService profileUserService;
-    @Getter
-    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     protected JpaRepository<User, Long> getRepository() {
@@ -112,7 +109,7 @@ public class UserService extends BaseService<User, Long> {
         String mail = StringUtils.deleteWhitespace(user.getMail()).toLowerCase();
 
         if (StringUtils.isBlank(username)) {
-            throw new ResourceNotFoundException("The username can not be blank");
+            throw new ResourceNotFoundException("The usernameMail can not be blank");
         }
 
         if (StringUtils.isBlank(mail)) {
@@ -120,7 +117,7 @@ public class UserService extends BaseService<User, Long> {
         }
 
         if (findByUsername(user.getUsername()) != null && !tmp.getId().equals(user.getId())) {
-            throw new ResourceExistsException("This username has already been taken. Please select a new one.");
+            throw new ResourceExistsException("This usernameMail has already been taken. Please select a new one.");
         }
 
         if (findByMail(user.getMail()) != null && !tmp.getId().equals(user.getId())) {

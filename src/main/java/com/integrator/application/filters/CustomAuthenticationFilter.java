@@ -2,6 +2,8 @@ package com.integrator.application.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.integrator.application.config.security.CustomAuthentication;
+import com.integrator.application.exceptions.NoAccessException;
+import com.integrator.application.exceptions.ResourceNotFoundException;
 import com.integrator.application.models.security.Token;
 import com.integrator.application.models.security.User;
 import com.integrator.application.services.configuration.UserSettingService;
@@ -37,24 +39,17 @@ public class CustomAuthenticationFilter extends FilterErrorHandler {
         String authToken = request.getHeader("Authorization");
 //            System.out.println("For Request: " + request.getServletPath() + "\n\n");
 //            System.out.println("Token: " + authToken + "\n\n");
-
         try {
             if (authenticationService.isJWTValid(authToken) == null) {
-                handleError(request, response, HttpStatus.UNAUTHORIZED.value(), "Invalid Token");
-                return;
+                throw new NoAccessException("Invalid token");
             }
 
             String payload = authenticationService.getJWTPayload(authToken);
             if (StringUtils.isBlank(payload)) {
-                handleError(request, response, HttpStatus.UNAUTHORIZED.value(), "Corrupted Token");
-                return;
+                throw new NoAccessException("Invalid token payload");
             }
 
             Token token = authenticationService.findByTokenAndEnabled(payload, true);
-            if (token == null) {
-                handleError(request, response, HttpStatus.UNAUTHORIZED.value(), "Corrupted Server Token");
-                return;
-            }
 
             CustomAuthentication authentication = new CustomAuthentication(
                     token,
@@ -65,13 +60,18 @@ public class CustomAuthenticationFilter extends FilterErrorHandler {
 
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (user == null) {
-                handleError(request, response, HttpStatus.INTERNAL_SERVER_ERROR.value(), "No user found");
-                return;
+                throw new RuntimeException("SecurityContextHolder User is null");
             }
 
             filterChain.doFilter(request, response);
+
         } catch (Exception e) {
-            handleError(request, response, HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            if(e instanceof NoAccessException ||
+                    e instanceof ResourceNotFoundException) {
+                handleError(request, response, HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+            } else {
+                handleError(request, response, HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            }
         }
     }
 

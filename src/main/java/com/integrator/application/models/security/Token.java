@@ -25,5 +25,6 @@ public class Token extends Base {
     @Column(unique = true)
     private String token;
 
+    @Column(nullable = false)
     private Date expirationDate;
 }
