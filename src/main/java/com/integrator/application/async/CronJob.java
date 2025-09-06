@@ -26,6 +26,9 @@ public class CronJob {
     public void generateRandomTestData() throws InterruptedException {
         log.info("Executing Cron Job: generateRandomTestData");
         TestType any = testTypeService.findAllByEnabled(true).stream().findFirst().orElse(null);
+        if(any == null) {
+            return;
+        }
         Long MAX = 1000L;
         Long MIN = 1L;
 

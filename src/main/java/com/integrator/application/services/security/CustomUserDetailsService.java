@@ -88,7 +88,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public Set<GrantedAuthority> getGrantedAuthorities(User user) {
         Set<GrantedAuthority> updatedAuthorities = new HashSet<>();
         for (Permit it : findUserPermits(user)) {
-            updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + it.getCode()));
+            updatedAuthorities.add(new SimpleGrantedAuthority(/*"ROLE_" +*/ it.getCode()));
         }
         return updatedAuthorities;
     }

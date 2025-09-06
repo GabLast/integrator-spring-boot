@@ -4,6 +4,15 @@ spring:
       integrator-spring-boot
   profiles:
     active: dev
+  batch:
+    job:
+      enabled: false #Whether to execute a Spring Batch job on startup.
+    jdbc:
+      initialize-schema: always
+  task:
+    scheduling:
+      pool:
+        size: 20
 
 server:
   port: ${PORT:8080}
@@ -14,3 +23,11 @@ app:
   version: @project.version@
   secrets:
     key: ${JWT:JNN324KUJN23UN4UI231H798N798CN987N198N908N8DN8}
+
+r2dbc:
+  database: r2dbc:h2:file:./data/reactive
+  username: sa
+  password:
+  port: 0
+  driver: h2
+

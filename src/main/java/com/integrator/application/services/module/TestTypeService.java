@@ -38,7 +38,7 @@ public class TestTypeService extends BaseService<TestType, Long> {
         log.info("Created TestType Pre-defined values");
     }
 
-    public List<TestType> findAllByEnabled(boolean a) {
-        return testTypeRepository.findAllByEnabled(true);
+    public List<TestType> findAllByEnabled(boolean enabled) {
+        return testTypeRepository.findAllByEnabled(enabled);
     }
 }

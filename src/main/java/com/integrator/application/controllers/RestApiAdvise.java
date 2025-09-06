@@ -7,6 +7,7 @@ import com.integrator.application.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -48,6 +49,19 @@ public class RestApiAdvise {
     )
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     protected BadResponse badRequest(NoAccessException ex, WebRequest request) {
+        return BadResponse.builder()
+                .message(ex.getMessage())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .path(request.getDescription(false))
+                .build();
+    }
+
+    @ExceptionHandler(
+            exception = AccessDeniedException.class,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    protected BadResponse badRequest(AccessDeniedException ex, WebRequest request) {
         return BadResponse.builder()
                 .message(ex.getMessage())
                 .status(HttpStatus.UNAUTHORIZED.value())

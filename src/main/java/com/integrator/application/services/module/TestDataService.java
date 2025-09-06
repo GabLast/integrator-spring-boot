@@ -7,6 +7,7 @@ import com.integrator.application.repositories.module.TestDataRepository;
 import com.integrator.application.services.BaseService;
 import com.integrator.application.utils.GlobalConstants;
 import com.integrator.application.utils.OffsetBasedPageRequest;
+import com.integrator.application.utils.Utilities;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -44,21 +45,23 @@ public class TestDataService extends BaseService<TestData, Long> {
 
     @Transactional(readOnly = true)
     public List<TestData> findAllFilter(boolean enabled, String timeZoneId,
-                                        String word, String description, TestType testType, Long testTypeId, LocalDate dateStart, LocalDate dateEnd,
+                                        String word, String description, TestType testType, Long testTypeId,
+//                                        LocalDate dateStart, LocalDate dateEnd,
+                                        Date dateStart, Date dateEnd,
                                         Integer limit, Integer offset, Sort sort) {
 
         TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
-        if (timeZone == null) {
-            timeZone = TimeZone.getTimeZone(GlobalConstants.DEFAULT_TIMEZONE);
-        }
+
         return testDataRepository.findAllFilter(
                 enabled,
                 word,
                 description,
                 testType,
                 testTypeId,
-                dateStart != null ? Date.from(dateStart.atStartOfDay().atZone(timeZone.toZoneId()).toInstant()) : null,
-                dateEnd != null ? Date.from(dateEnd.atTime(LocalTime.MAX).atZone(timeZone.toZoneId()).toInstant()) : null,
+//                dateStart != null ? Date.from(dateStart.atStartOfDay().atZone(timeZone.toZoneId()).toInstant()) : null,
+//                dateEnd != null ? Date.from(dateEnd.atTime(LocalTime.MAX).atZone(timeZone.toZoneId()).toInstant()) : null,
+                Utilities.getTimeAtTimeZoneAtStartOfDay(timeZone, dateStart),
+                Utilities.getTimeAtTimeZoneAtEndOfDay(timeZone, dateEnd),
                 sort == null ? new OffsetBasedPageRequest(limit, offset) : new OffsetBasedPageRequest(limit, offset, sort)
         );
 

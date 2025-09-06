@@ -9,6 +9,7 @@ import com.integrator.application.models.security.User;
 import com.integrator.application.services.configuration.UserSettingService;
 import com.integrator.application.services.security.AuthenticationService;
 import com.integrator.application.services.security.CustomUserDetailsService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,11 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
+@Component
 @Slf4j
 public class CustomAuthenticationFilter extends FilterErrorHandler {
-//    filters for fully webflux: https://www.baeldung.com/spring-webflux-filters
+    //    filters for fully webflux: https://www.baeldung.com/spring-webflux-filters
     // tldr: class ExampleWebFilter implements WebFilter
     private final AuthenticationService authenticationService;
     private final CustomUserDetailsService customUserDetailsService;
@@ -35,19 +38,18 @@ public class CustomAuthenticationFilter extends FilterErrorHandler {
 
     //    https://www.geeksforgeeks.org/spring-boot-3-0-jwt-authentication-with-spring-security-using-mysql-database/
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
                                     FilterChain filterChain) {
         String authToken = request.getHeader("Authorization");
 //            System.out.println("For Request: " + request.getServletPath() + "\n\n");
 //            System.out.println("Token: " + authToken + "\n\n");
         try {
-            if(StringUtils.isBlank(authToken)) {
+            if (StringUtils.isBlank(authToken)) {
                 throw new ResourceNotFoundException("The request did not send its Authorization token");
             }
 
-            if (authenticationService.isJWTValid(authToken) == null) {
-                throw new NoAccessException("Invalid token");
-            }
+            authenticationService.isJWTValid(authToken);
 
             String payload = authenticationService.getJWTPayload(authToken);
             if (StringUtils.isBlank(payload)) {
@@ -71,9 +73,11 @@ public class CustomAuthenticationFilter extends FilterErrorHandler {
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
-            if(e instanceof NoAccessException ||
+            if (e instanceof NoAccessException ||
                     e instanceof ResourceNotFoundException) {
                 handleError(request, response, HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+            } else if (e instanceof JwtException) {
+                handleError(request, response, HttpStatus.BAD_REQUEST.value(), "Invalid JWT");
             } else {
                 handleError(request, response, HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
             }
@@ -87,10 +91,10 @@ public class CustomAuthenticationFilter extends FilterErrorHandler {
 
         filter =
                 new AntPathMatcher().match("/api/auth/**", request.getServletPath()) ||
-                new AntPathMatcher().match("/sw.js", request.getServletPath()) ||
-                new AntPathMatcher().match("/*.ico", request.getServletPath()) ||
-                new AntPathMatcher().match("/dbconsole", request.getServletPath()) ||
-                new AntPathMatcher().match("/dbconsole/**", request.getServletPath())
+                        new AntPathMatcher().match("/sw.js", request.getServletPath()) ||
+                        new AntPathMatcher().match("/*.ico", request.getServletPath()) ||
+                        new AntPathMatcher().match("/dbconsole", request.getServletPath()) ||
+                        new AntPathMatcher().match("/dbconsole/**", request.getServletPath())
         ;
 //        System.out.println("For Request: " + request.getServletPath() + "\t | " + filter);
         return filter;

@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,11 +17,14 @@ import java.util.Set;
 @Component
 public final class SecurityUtils {
 
-    public static boolean isAccessGranted(String permit) {
+    public static boolean isAccessGranted(String... permits) {
         // lookup needed role in user roles
-        final List<String> list = Collections.singletonList("ROLE_" + permit);
+        final List<String> list = Arrays.asList(permits);
         final Authentication userAuthentication = SecurityContextHolder.getContext().getAuthentication();
 
+//        System.out.println("isAccessGranted: "+ userAuthentication.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .anyMatch(list::contains));
         return userAuthentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(list::contains);
@@ -32,7 +35,7 @@ public final class SecurityUtils {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Set<GrantedAuthority> updatedAuthorities = new HashSet<>();
         for (Permit it : permits) {
-            updatedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + it.getCode()));
+            updatedAuthorities.add(new SimpleGrantedAuthority(/*"ROLE_" +*/ it.getCode()));
         }
 
         Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), updatedAuthorities);

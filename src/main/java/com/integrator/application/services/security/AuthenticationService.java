@@ -94,7 +94,7 @@ public class AuthenticationService {
 
             token.setExpirationDate(DateUtils.addDays(cal.getTime(), 7));
 
-            token.setToken(Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(user.getUsername().getBytes())));
+            token.setToken(generateBase64String(user));
             token = tokenRepository.saveAndFlush(token);
         }
 
@@ -113,23 +113,30 @@ public class AuthenticationService {
             cal.set(Calendar.MILLISECOND, 0);
 
             token.setExpirationDate(DateUtils.addDays(cal.getTime(), 7));
-            token.setToken(Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest((user.getUsername() + "/" + UUID.randomUUID()).getBytes())));
+            token.setToken(generateBase64String(user));
             token = tokenRepository.saveAndFlush(token);
         }
 
         return token;
     }
 
-    public Claims isJWTValid(String token) {
+    public String generateBase64String(User user) throws NoSuchAlgorithmException {
+        return Base64.getEncoder()
+                .encodeToString(MessageDigest.getInstance("SHA-256")
+                        .digest((user.getUsername() + "/" + UUID.randomUUID())
+                                .getBytes()));
+    }
+
+    public void isJWTValid(String token) {
         token = token.replace("Bearer", "").trim();
 
-        Claims claims = Jwts.parser()
+        //throws JwtException if invalid
+        Jwts.parser()
                 .verifyWith(Utilities.generateJWTKey(appInfo.getJwtSecretKey()))
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseSignedClaims(token);
+//                .getPayload();
 //            System.out.println("Expires in:" + Utilities.formatDate(claims.getExpiration(),"", ""));
-        return claims;
     }
 
     public String getJWTPayload(String token) {
@@ -199,7 +206,7 @@ public class AuthenticationService {
         Token token = generateToken(user);
 
         return LoginResponse.builder()
-                .token(token.getToken())
+                .token(generateJWT(token))
                 .grantedAuthorities(customUserDetailsService
                         .getGrantedAuthorities(user).stream()
                         .map(it -> PermitDto.builder()
