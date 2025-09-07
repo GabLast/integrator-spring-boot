@@ -2,7 +2,6 @@ package com.integrator.application.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.integrator.application.config.security.CustomAuthentication;
-import com.integrator.application.exceptions.NoAccessException;
 import com.integrator.application.exceptions.ResourceNotFoundException;
 import com.integrator.application.models.security.Token;
 import com.integrator.application.models.security.User;
@@ -16,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -53,7 +53,7 @@ public class CustomAuthenticationFilter extends FilterErrorHandler {
 
             String payload = authenticationService.getJWTPayload(authToken);
             if (StringUtils.isBlank(payload)) {
-                throw new NoAccessException("Invalid token payload");
+                throw new AccessDeniedException("Invalid token payload");
             }
 
             Token token = authenticationService.findByTokenAndEnabled(payload, true);
@@ -73,7 +73,7 @@ public class CustomAuthenticationFilter extends FilterErrorHandler {
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
-            if (e instanceof NoAccessException ||
+            if (e instanceof AccessDeniedException ||
                     e instanceof ResourceNotFoundException) {
                 handleError(request, response, HttpStatus.UNAUTHORIZED.value(), e.getMessage());
             } else if (e instanceof JwtException) {

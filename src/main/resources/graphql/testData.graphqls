@@ -1,0 +1,29 @@
+scalar Date
+
+type TestData {
+    id: ID!
+    word: String!
+    date: Date
+    testTypeId: Int
+    testType: String
+}
+
+type TestDataResponse {
+    data: [TestData]
+}
+
+type Query {
+    findAllFilter(
+        enabled: Boolean!,
+        word: String,
+        description: String,
+        testTypeId: ID,
+        dateStart: Date,
+        dateEnd: Date,
+        sortProperty: String,
+        sortOrder: String,
+        offset: Int,
+        limit: Int
+    ): [TestData]
+#    this returns a list [] of the Object. returning TestDataResponse would encapsulate it.
+}

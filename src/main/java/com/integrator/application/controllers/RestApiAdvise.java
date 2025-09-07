@@ -1,7 +1,7 @@
 package com.integrator.application.controllers;
 
 import com.integrator.application.dto.response.BadResponse;
-import com.integrator.application.exceptions.NoAccessException;
+import com.integrator.application.exceptions.InvalidDataFormat;
 import com.integrator.application.exceptions.ResourceExistsException;
 import com.integrator.application.exceptions.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -44,14 +44,14 @@ public class RestApiAdvise {
     }
 
     @ExceptionHandler(
-            exception = NoAccessException.class,
+            exception = InvalidDataFormat.class,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-    protected BadResponse badRequest(NoAccessException ex, WebRequest request) {
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    protected BadResponse badRequest(InvalidDataFormat ex, WebRequest request) {
         return BadResponse.builder()
                 .message(ex.getMessage())
-                .status(HttpStatus.UNAUTHORIZED.value())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .path(request.getDescription(false))
                 .build();
     }

@@ -4,7 +4,6 @@ import com.integrator.application.config.AppInfo;
 import com.integrator.application.dto.request.security.UserDto;
 import com.integrator.application.dto.response.security.LoginResponse;
 import com.integrator.application.dto.response.security.PermitDto;
-import com.integrator.application.exceptions.NoAccessException;
 import com.integrator.application.exceptions.ResourceNotFoundException;
 import com.integrator.application.models.configuration.UserSetting;
 import com.integrator.application.models.security.Token;
@@ -18,6 +17,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -159,7 +159,7 @@ public class AuthenticationService {
         }
 
         if (!token.isEnabled()) {
-            throw new NoAccessException("The token has been disabled");
+            throw new AccessDeniedException("The token has been disabled");
         }
 
         UserSetting userSetting = userSettingService.findByEnabledAndUser(true, token.getUser());

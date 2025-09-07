@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestDataController {
 
+    private final TestDataService service;
+
     @GetMapping("/findall")
 //    @PreAuthorize("hasAnyAuthority('', '', '')")
 //    @PreAuthorize("@securityUtils.isAccessGranted('FAKE_AUTHORITY')")
@@ -27,7 +29,6 @@ public class TestDataController {
     public ResponseEntity<?> findAll(FilterTestData filterTestData) {
 
         UserSetting userSetting = (UserSetting) SecurityContextHolder.getContext().getAuthentication().getDetails();
-//        System.out.println("Principal: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         PaginationObject paginationObject = PaginationConverter.fromSimpleValues(
                 filterTestData.getSortProperty(),
                 filterTestData.getSortOrder(),
@@ -49,8 +50,5 @@ public class TestDataController {
                 paginationObject.sort()
         ), HttpStatus.OK);
     }
-
-    private final TestDataService service;
-
 
 }

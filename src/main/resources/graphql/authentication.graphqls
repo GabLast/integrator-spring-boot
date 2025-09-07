@@ -1,0 +1,15 @@
+type Permit {
+    permit: String
+}
+
+type LoginResponse {
+    token: String
+    grantedAuthorities: [Permit]
+}
+
+type Mutation {
+    login(
+        usernameMail: String!,
+        password: String!
+    ): LoginResponse
+}

@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +37,8 @@ public interface TestDataRepository extends JpaRepository<TestData, Long> {
                                  @Param("description") String description,
                                  @Param("testType") TestType testType,
                                  @Param("testTypeId") Long testTypeId,
-                                 @Param("start") Date start,
-                                 @Param("end") Date end,
+                                 @Param("start") LocalDateTime start,
+                                 @Param("end") LocalDateTime end,
                                  Pageable pageable
     );
 
@@ -56,8 +56,8 @@ public interface TestDataRepository extends JpaRepository<TestData, Long> {
                            @Param("word") String word,
                            @Param("description") String description,
                            @Param("testType") TestType testType,
-                           @Param("start") Date start,
-                           @Param("end") Date end
+                           @Param("start") LocalDateTime start,
+                           @Param("end") LocalDateTime end
     );
 
 

@@ -16,7 +16,7 @@ public class PaginationConverter {
         limit = limit == null ? 20 : limit;
 
         Sort sort;
-        if (sortOrder.equalsIgnoreCase("DESC")) {
+        if (StringUtils.isBlank(sortOrder) || sortOrder.equalsIgnoreCase("DESC")) {
             sort = Sort.by(Sort.Direction.DESC, sortProperty);
         } else {
             sort = Sort.by(Sort.Direction.ASC, sortProperty);

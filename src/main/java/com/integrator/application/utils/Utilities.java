@@ -10,9 +10,6 @@ import javax.crypto.SecretKey;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 public class Utilities {
@@ -79,7 +76,7 @@ public class Utilities {
 
     public static String capitalizeEachWord(String input) {
 
-        if(input == null)
+        if (input == null)
             return "";
         return Arrays.stream(input.split("\\s+"))
                 .map(word -> Character.toUpperCase(word.charAt(0)) + word.substring(1))
@@ -90,49 +87,5 @@ public class Utilities {
         //docs at https://github.com/jwtk/jjwt
 //        return Keys.hmacShaKeyFor(key.getBytes());
         return Keys.hmacShaKeyFor(Base64.getEncoder().encode(key.getBytes()));
-    }
-
-    public static Date getTimeAtTimeZoneAtStartOfDay(TimeZone timeZone, Date date) {
-        if(date == null) {
-            return null;
-        }
-
-        if (timeZone == null) {
-            timeZone = TimeZone.getTimeZone(GlobalConstants.DEFAULT_TIMEZONE);
-        }
-
-        Calendar calendar = Calendar.getInstance(timeZone);
-        calendar.setTime(date);
-        setCalendarToStartOfDay(calendar);
-        return calendar.getTime();
-    }
-
-    public static Date getTimeAtTimeZoneAtEndOfDay(TimeZone timeZone, Date date) {
-        if(date == null) {
-            return null;
-        }
-
-        if (timeZone == null) {
-            timeZone = TimeZone.getTimeZone(GlobalConstants.DEFAULT_TIMEZONE);
-        }
-
-        Calendar calendar = Calendar.getInstance(timeZone);
-        calendar.setTime(date);
-        setCalendarToEndOfDay(calendar);
-        return calendar.getTime();
-    }
-
-    public static void setCalendarToStartOfDay(Calendar calendar) {
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-    }
-
-    public static void setCalendarToEndOfDay(Calendar calendar) {
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 59);
     }
 }

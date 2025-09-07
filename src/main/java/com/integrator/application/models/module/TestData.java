@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,7 +25,7 @@ public class TestData extends Base {
 
     @Column(nullable = false)
     private String word;
-    private Date date;
+    private LocalDateTime date;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private TestType testType;

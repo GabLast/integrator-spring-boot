@@ -1,0 +1,132 @@
+{
+	"info": {
+		"_postman_id": "9ec97b43-b9e2-49c9-9f50-da14595d765f",
+		"name": "Integrator Workspace",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13993259"
+	},
+	"item": [
+		{
+			"name": "reactive",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url2}}/api/auth/reactive",
+					"host": [
+						"{{url2}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"reactive"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"usernameMail\": \"admin\",\r\n    \"password\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url2}}/api/auth/login",
+					"host": [
+						"{{url2}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findall",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJJbnRlZ3JhdG9yLVNwcmluZy1Cb290Iiwic3ViIjoiZGF0YSIsInRva2VuIjoiZDN3WmcvcktJWTErZWVuTWRkdFp6QXJZSjlsUXBTNXZJMTJIS3RjeGFBaz0iLCJleHAiOjE3NTc3MzYwMDB9.ceeu4VlGIIJTdh6ZBT9lDn3x87iIObvkCz_6HyGLUZ9a95-4dZUnx0VNEuTWkX-YPunl4cAr3w46i8CFzl-eQQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url2}}/api/testdata/findall?enabled=true&dateEnd=07/09/2020&limit=1",
+					"host": [
+						"{{url2}}"
+					],
+					"path": [
+						"api",
+						"testdata",
+						"findall"
+					],
+					"query": [
+						{
+							"key": "enabled",
+							"value": "true"
+						},
+						{
+							"key": "dateEnd",
+							"value": "07/09/2020"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "word",
+							"value": "03eb-4cd2-b8",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

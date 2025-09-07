@@ -25,3 +25,7 @@ spring:
     execute-in-transaction: true
     baseline-on-migrate: true
     baseline-version: 0
+  graphql:
+    graphiql:
+      enabled: false
+      path: /graphiql

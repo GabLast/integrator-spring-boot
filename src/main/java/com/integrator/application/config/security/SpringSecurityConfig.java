@@ -33,6 +33,7 @@ public class SpringSecurityConfig {
                                 .requestMatchers(PathRequest.toH2Console()).permitAll() // Allow public access
                                 .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // Allow auth
                                 .requestMatchers(HttpMethod.GET, "/api/auth/reactive").permitAll() // Allow reactive test
+                                .requestMatchers("/graphql").permitAll() // Allow graphql. Manage them with @PreAuthorize
                                 .anyRequest().authenticated() // Require authentication for all other requests
                 )
                 .csrf(AbstractHttpConfigurer::disable)

@@ -16,7 +16,7 @@
 1. Setup Docker - Done
 2. Reactive Programming Rest API - Done
 3. Reactive Repository - Need Different Datasource (Maybe do a fully non-blocking app)
-4. Implement GraphQL - 
+4. Implement GraphQL - Done
 5. Implement JWT - Done
 6. Configure Spring Security - Done
 7. Implement Flyway Data Loading - Done

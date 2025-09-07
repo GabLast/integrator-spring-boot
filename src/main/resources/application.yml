@@ -13,6 +13,12 @@ spring:
     scheduling:
       pool:
         size: 20
+  graphql:
+    http:
+      path: /graphql
+    schema:
+      file-extensions: .graphqls
+      locations: classpath:graphql/**/
 
 server:
   port: ${PORT:8080}

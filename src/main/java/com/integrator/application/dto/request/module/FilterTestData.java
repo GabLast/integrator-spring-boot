@@ -5,7 +5,7 @@ import com.integrator.application.dto.request.RequestPagination;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -14,6 +14,6 @@ public class FilterTestData extends RequestPagination implements BaseJson {
     private String word = null;
     private String description = null;
     private Long testTypeId = null;
-    private Date dateStart = null;
-    private Date dateEnd = null;
+    private LocalDate dateStart = null;
+    private LocalDate dateEnd = null;
 }
