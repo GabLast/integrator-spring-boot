@@ -10,6 +10,7 @@
 6. FlywayDB (data loading)
 7. Spring Webflux - Reactive Programming
 8. Spring Batch
+9. Apache Kafka
 
 ### Check list
 
@@ -24,3 +25,4 @@
 9. Implement @PreAuthorize on Rest APIs - Done
 10. Async Tasks (Cron jobs - Scheduled Tasks - Async Executors) - Done
 11. Spring Batch - Done
+12. Apache Kafka - Work in progress - most basic work is done
