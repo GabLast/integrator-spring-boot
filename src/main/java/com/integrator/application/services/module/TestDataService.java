@@ -9,6 +9,7 @@ import com.integrator.application.utils.DateUtilities;
 import com.integrator.application.utils.OffsetBasedPageRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class TestDataService extends BaseService<TestData, Long> {
                                         String word, String description, TestType testType, Long testTypeId,
                                         LocalDate dateStart, LocalDate dateEnd,
                                         Integer limit, Integer offset, Sort sort) {
+
         return testDataRepository.findAllFilter(
                 enabled,
                 word,
@@ -70,17 +72,27 @@ public class TestDataService extends BaseService<TestData, Long> {
         );
     }
 
-    public TestData saveTestData(TestData testData) throws InterruptedException {
+    public TestData saveTestData(TestData testData) {
+
         if (testData == null) {
             throw new ResourceNotFoundException("Value can't be null");
         }
+
+        if (StringUtils.isBlank(testData.getWord())) {
+            throw new ResourceNotFoundException("Word attribute can't be null");
+        }
+
+        if (testData.getTestType() == null) {
+            throw new ResourceNotFoundException("Test Type can't be null");
+        }
+
         testData = saveAndFlush(testData);
 
         //beware, this runs once on start up, before even calling this service method. why?
         CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(() -> {
             try {
                 Thread.sleep(10 * 1000); //simulate fetching
-                asyncExecutorBean.execute(this::simpleExecutorTest);
+                asyncExecutorBean.execute(this::asyncTest);
                 return true;
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -94,12 +106,12 @@ public class TestDataService extends BaseService<TestData, Long> {
             }
         });
 
-        log.info("Continued to return");
+//        log.info("Continued to return");
 
         return testData;
     }
 
-    private void simpleExecutorTest() {
+    private void asyncTest() {
         log.info("Executor Task Executed through an Executor");
     }
 }

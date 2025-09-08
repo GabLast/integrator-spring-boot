@@ -7,40 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "reactive",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url2}}/api/auth/reactive",
-					"host": [
-						"{{url2}}"
-					],
-					"path": [
-						"api",
-						"auth",
-						"reactive"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "login",
 			"request": {
 				"method": "POST",
@@ -123,6 +89,40 @@
 							"value": "03eb-4cd2-b8",
 							"disabled": true
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reactive",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url2}}/api/auth/reactive",
+					"host": [
+						"{{url2}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"reactive"
 					]
 				}
 			},

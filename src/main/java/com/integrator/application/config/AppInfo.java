@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Getter
 @Configuration
 //enables the injection of properties from application.properties
@@ -30,5 +32,8 @@ public class AppInfo {
     private String dataSourceUsername;
     @Value("${spring.datasource.password}")
     private String dataSourcePassword;
+
+    @Value(value = "${spring.kafka.bootstrap-servers}")
+    private List<String> kafkaServers;
 
 }

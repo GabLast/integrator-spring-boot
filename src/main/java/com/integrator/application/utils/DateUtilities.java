@@ -1,5 +1,7 @@
 package com.integrator.application.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,6 +14,10 @@ public class DateUtilities {
     public static LocalDate getLocalDateAtTimeZoneAtStartOrEnd(String timeZoneId, LocalDate date, boolean startOfDay) {
         if (date == null) {
             return null;
+        }
+
+        if(StringUtils.isBlank(timeZoneId)) {
+            timeZoneId = GlobalConstants.DEFAULT_TIMEZONE;
         }
 
         TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
@@ -29,6 +35,10 @@ public class DateUtilities {
             return null;
         }
 
+        if(StringUtils.isBlank(timeZoneId)) {
+            timeZoneId = GlobalConstants.DEFAULT_TIMEZONE;
+        }
+
         TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
         if (timeZone == null) {
             timeZone = TimeZone.getTimeZone(GlobalConstants.DEFAULT_TIMEZONE);
@@ -44,6 +54,10 @@ public class DateUtilities {
             return null;
         }
 
+        if(StringUtils.isBlank(timeZoneId)) {
+            timeZoneId = GlobalConstants.DEFAULT_TIMEZONE;
+        }
+
         TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
         if (timeZone == null) {
             timeZone = TimeZone.getTimeZone(GlobalConstants.DEFAULT_TIMEZONE);
@@ -57,6 +71,10 @@ public class DateUtilities {
     public static LocalDateTime getLocalDateTimeAtTimeZoneAtStartOrEnd(String timeZoneId, LocalDateTime date, boolean startOfDay) {
         if (date == null) {
             return null;
+        }
+
+        if(StringUtils.isBlank(timeZoneId)) {
+            timeZoneId = GlobalConstants.DEFAULT_TIMEZONE;
         }
 
         TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
@@ -125,6 +143,22 @@ public class DateUtilities {
                 date.toLocalDate().atTime(LocalTime.MAX).atZone(timeZone.toZoneId()).toLocalDateTime();
     }
 
+    public static LocalDateTime getLocalDateTimeAtTimeZone(String timeZoneId, LocalDateTime date) {
+        if (date == null) {
+            return null;
+        }
+
+        if(StringUtils.isBlank(timeZoneId)) {
+            timeZoneId = GlobalConstants.DEFAULT_TIMEZONE;
+        }
+
+        TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
+        if (timeZone == null) {
+            timeZone = TimeZone.getTimeZone(GlobalConstants.DEFAULT_TIMEZONE);
+        }
+
+        return date.atZone(timeZone.toZoneId()).toLocalDateTime();
+    }
 
     /**
      * Regular Java Date Type. Try to deprecate their usage.

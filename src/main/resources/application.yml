@@ -19,6 +19,27 @@ spring:
     schema:
       file-extensions: .graphqls
       locations: classpath:graphql/**/
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: earliest
+    #    listener:
+#      concurrency: 1
+#      type: single
+    admin:
+      fail-fast: true
+      auto-create: true
+    #    producer:
+    #      bootstrap-servers: localhost:9092
+    #      client-id: producer-test-data
+    #      key-serializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-serializer: org.apache.kafka.common.serialization.StringDeserializer
+#    consumer:
+#      bootstrap-servers: localhost:9092
+#      group-id: consumer-test-data
+#      auto-offset-reset: earliest
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer #org.apache.kafka.common.serialization.Deserializer? com.acme.CustomDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 server:
   port: ${PORT:8080}
